@@ -1,0 +1,13 @@
+{
+  "name": "gjrequest.js",
+  "version": "1.0.0",
+  "description": "Geometry Dash API - Powered by GDPlatform.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["geometry dash", "gd", "api", "gjrequest"],
+  "author": "SkunkPlatform",
+  "license": "MIT",
+  "type": "commonjs"
+}
