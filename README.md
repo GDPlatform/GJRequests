@@ -62,6 +62,28 @@ const { Client } = require("gjrequest.js");
 })();
 ```
 
+### Variables
+
+| Variable      | Type      | Description                                                                        |
+| ------------- | --------- | ---------------------------------------------------------------------------------- |
+| `accountID`   | `number`  | Your GD account ID. Set after login.                                               |
+| `gjp2`        | `string`  | Generated from password via `generateGjp2()`. Required for authenticated requests. |
+| `levelID`     | `number`  | The ID of the level to fetch scores from.                                          |
+| `messageID`   | `number`  | The ID of a specific message to read.                                              |
+| `toAccountID` | `number`  | Account ID of the user to send a message to.                                       |
+| `subject`     | `string`  | Message subject (Base64-encoded automatically).                                    |
+| `body`        | `string`  | Message body (Base64-encoded automatically).                                       |
+| `page`        | `number`  | Page number when reading messages (0-indexed).                                     |
+| `sent`        | `boolean` | Read sent messages (`true`) or inbox (`false`).                                    |
+| `secret`      | `string`  | Secret key for generic endpoint requests. Default: `"Wmfd2893gb7"`.                |
+
+### Client Callbacks
+
+* `_requireLogin()` – Internal method. Throws if the client is not logged in.
+* All methods return a `Promise` and should be `await`ed.
+* `readMessages()` supports pagination with `page` and `sent` options.
+* `requestEndpoint(endpoint, params, secret)` allows custom calls to GD endpoints using the client’s credentials.
+
 ### Security Notes
 
 * **Do NOT hardcode your GD password** in public repositories.
@@ -79,18 +101,18 @@ MIT © SkunkPlatform
 
 ---
 
-## 🇦🇷 Español (ARG)
+## 🇦🇷 Español (Argentino, es-ar)
 
-> Un SDK liviano para Node.js que permite interactuar con la **API de Geometry Dash** (potenciada por GDPlatform).
+> Un SDK ligero para Node.js para interactuar con la **API de Geometry Dash** (potenciada por GDPlatform).
 > Permite iniciar sesión, leer/enviar mensajes y obtener puntuaciones de niveles usando `gjp2`.
 
-### Funciones
+### Funcionalidades
 
 * Iniciar sesión con `accountID` + contraseña (genera `gjp2`)
 * Leer mensajes recibidos o enviados
 * Enviar mensajes (codificados en Base64)
 * Obtener puntuaciones de niveles
-* Hacer solicitudes genéricas a endpoints con `requestEndpoint()`
+* Solicitudes genéricas a endpoints vía `requestEndpoint()`
 
 ### Instalación
 
@@ -109,29 +131,24 @@ const { Client } = require("gjrequest.js");
 (async () => {
     const client = new Client();
 
-    // Iniciar sesión de forma segura usando variables de entorno
     await client.login({
         accountID: process.env.GD_ACCOUNT_ID,
         password: process.env.GD_PASSWORD
     });
 
-    // Leer mensajes recibidos
     const inbox = await client.readMessages();
     console.log(inbox);
 
-    // Enviar un mensaje
     const sent = await client.sendMessage(
         29294657,
         "Hola Mundo",
-        "¡Este es un mensaje de prueba!"
+        "Este es un mensaje de prueba!"
     );
     console.log(sent);
 
-    // Obtener puntuaciones de un nivel
     const scores = await client.getLevelScores(1234567);
     console.log(scores);
 
-    // Solicitud genérica a un endpoint
     const response = await client.requestEndpoint("uploadGJMessage20.php", {
         toAccountID: 29294657,
         subject: Buffer.from("Prueba").toString("base64"),
@@ -141,16 +158,38 @@ const { Client } = require("gjrequest.js");
 })();
 ```
 
+### Variables
+
+| Variable      | Tipo      | Descripción                                                                                 |
+| ------------- | --------- | ------------------------------------------------------------------------------------------- |
+| `accountID`   | `number`  | Tu ID de cuenta de GD. Se asigna tras el login.                                             |
+| `gjp2`        | `string`  | Generado desde tu contraseña con `generateGjp2()`. Necesario para solicitudes autenticadas. |
+| `levelID`     | `number`  | ID del nivel para obtener puntuaciones.                                                     |
+| `messageID`   | `number`  | ID de un mensaje específico a leer.                                                         |
+| `toAccountID` | `number`  | ID de la cuenta a la que enviar un mensaje.                                                 |
+| `subject`     | `string`  | Asunto del mensaje (codificado automáticamente en Base64).                                  |
+| `body`        | `string`  | Cuerpo del mensaje (codificado automáticamente en Base64).                                  |
+| `page`        | `number`  | Número de página al leer mensajes (comienza en 0).                                          |
+| `sent`        | `boolean` | Leer mensajes enviados (`true`) o bandeja de entrada (`false`).                             |
+| `secret`      | `string`  | Clave secreta para solicitudes genéricas. Por defecto: `"Wmfd2893gb7"`.                     |
+
+### Callbacks del Cliente
+
+* `_requireLogin()` – Método interno. Lanza error si no se inició sesión.
+* Todos los métodos retornan `Promise` y deben usarse con `await`.
+* `readMessages()` soporta paginación con `page` y `sent`.
+* `requestEndpoint(endpoint, params, secret)` permite llamadas personalizadas a endpoints usando las credenciales del cliente.
+
 ### Seguridad
 
-* **NO incluyas tu contraseña de GD** en repositorios públicos.
-* Usa variables de entorno (`.env`) u otro método seguro.
-* `gjp2` se genera localmente; no se envía el login real, solo el hash.
+* **No pongas tu contraseña de GD en repositorios públicos.**
+* Usar variables de entorno (`.env`) u otro almacenamiento seguro.
+* `gjp2` se genera localmente; no se envía la contraseña real, solo el hash.
 
 ### Referencias
 
 * [GD Docs por Wyliemaster](https://wyliemaster.github.io/gddocs/)
-* [Endpoints de la API de Geometry Dash](https://www.boomlings.com/database/)
+* [Endpoints de Geometry Dash](https://www.boomlings.com/database/)
 
 ### Licencia
 
